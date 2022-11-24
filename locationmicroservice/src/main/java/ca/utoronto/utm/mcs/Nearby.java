@@ -21,7 +21,7 @@ public class Nearby extends Endpoint {
         System.out.println("Reached /location/nearbyDriver handle");
         String[] params = r.getRequestURI().toString().split("/");
         if (params.length != 4 || params[3].isEmpty()) {
-            this.sendStatus(r, 409);
+            this.sendStatus(r, 400);
             return;
         }
 
@@ -29,7 +29,7 @@ public class Nearby extends Endpoint {
             String[] split = params[3].split("\\?radius=");
 
             if (split.length != 2 || split[0].equals("")) {
-                this.sendStatus(r, 405);
+                this.sendStatus(r, 400);
                 return;
             }
 
@@ -39,7 +39,7 @@ public class Nearby extends Endpoint {
             try {
                 radius = Integer.parseInt((split[1]));
             } catch (Exception e) {
-                this.sendStatus(r, 401);
+                this.sendStatus(r, 400);
                 return;
             }
 
