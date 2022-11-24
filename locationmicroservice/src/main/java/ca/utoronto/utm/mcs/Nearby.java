@@ -25,24 +25,24 @@ public class Nearby extends Endpoint {
             return;
         }
 
+        String[] split = params[3].split("\\?radius=");
+
+        if (split.length != 2 || split[0].equals("")) {
+            this.sendStatus(r, 400);
+            return;
+        }
+
+        String uid = split[0];
+        int radius;
+
         try {
-            String[] split = params[3].split("\\?radius=");
+            radius = Integer.parseInt((split[1]));
+        } catch (Exception e) {
+            this.sendStatus(r, 400);
+            return;
+        }
 
-            if (split.length != 2 || split[0].equals("")) {
-                this.sendStatus(r, 400);
-                return;
-            }
-
-            String uid = split[0];
-            int radius;
-
-            try {
-                radius = Integer.parseInt((split[1]));
-            } catch (Exception e) {
-                this.sendStatus(r, 400);
-                return;
-            }
-
+        try {
             Result result = this.dao.getNearbyDrivers(uid, radius);
 
             if (result.hasNext()) {
