@@ -97,4 +97,29 @@ public class Neo4jDAO {
         System.out.println(query);
         return this.session.run(query);
     }
+
+    public Result getNavigation(String start, String dest) {
+        System.out.println("Reached getNavigation in DAO");
+        this.session.run("CALL gds.graph.drop('myGraph', false)");
+        System.out.println("Cleared myGraph");
+        this.session.run("CALL gds.graph.project('myGraph', 'road', 'ROUTE_TO', {relationshipProperties: 'travel_time'})");
+        System.out.println("Created myGraph");
+        String query =
+                "MATCH (start:road {name: '%s'}), (end:road {name: '%s'}) " +
+                        "CALL gds.shortestPath.dijkstra.stream('myGraph', { " +
+                            "sourceNode: start, " +
+                            "targetNode: end, " +
+                            "relationshipWeightProperty: 'travel_time' " +
+                        "}) " +
+                        "YIELD sourceNode, targetNode, totalCost, nodeIds, costs, path " +
+                            "RETURN totalCost as total_time, " +
+                            "size([nodeId IN nodeIds | gds.util.asNode(nodeId).name]) as length, " +
+                            "[nodeId IN nodeIds | gds.util.asNode(nodeId).name] AS nodeNames, " +
+                            "costs as times, " +
+                            "[nodeId IN nodeIds | gds.util.asNode(nodeId).has_traffic] as trafficBools, " +
+                            "nodes(path) as path";
+        query = String.format(query, start, dest);
+        System.out.println(query);
+        return this.session.run(query);
+    }
 }
