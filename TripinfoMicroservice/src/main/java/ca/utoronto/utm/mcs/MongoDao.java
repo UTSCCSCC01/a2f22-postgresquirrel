@@ -9,6 +9,15 @@ import com.mongodb.client.MongoDatabase;
 import io.github.cdimascio.dotenv.Dotenv;
 
 import org.bson.Document;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.time.Duration;
 
 public class MongoDao {
 
@@ -41,4 +50,17 @@ public class MongoDao {
 
 	// *** implement database operations here *** //
 
+	private HttpResponse<String> sendHttpRequest(URI uri, String method, JSONObject body) throws IOException, InterruptedException {
+		HttpClient client = HttpClient.newBuilder()
+				.version(HttpClient.Version.HTTP_1_1)
+				.followRedirects(HttpClient.Redirect.NORMAL)
+				.connectTimeout(Duration.ofSeconds(20))
+				.build();
+
+		//GET /location/nearbyDriver/:uid?radius=
+		HttpRequest testRequest = HttpRequest.newBuilder(uri)
+				.method(method, HttpRequest.BodyPublishers.ofString(body.toString())).build();
+
+		return client.send(testRequest, HttpResponse.BodyHandlers.ofString());
+	}
 }
