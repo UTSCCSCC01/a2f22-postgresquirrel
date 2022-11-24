@@ -17,16 +17,16 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.net.URI;
-import java.io.OutputStream;    // Also given to you to send back your response
+import java.io.OutputStream; // Also given to you to send back your response
 import java.time.Duration;
 import java.util.HashMap;
 
 public class RequestRouter implements HttpHandler {
-	
-    /**
-     * You may add and/or initialize attributes here if you 
-     * need.
-     */
+
+	/**
+	 * You may add and/or initialize attributes here if you
+	 * need.
+	 */
 
 	String route;
 
