@@ -21,18 +21,22 @@ public class Passenger extends Endpoint {
         // TODO
         System.out.println("getting passenger");
         try {
-            JSONObject body = new JSONObject(Utils.convert(r.getRequestBody()));
-            if (body.has("uid")) {
-
-                // Object[] driver = this.dao.getTripPassenger(body.getString("uid"));
-                System.out.println("got passenger");
-                this.sendStatus(r, 200);
-
-            } else {
+            String[] params = r.getRequestURI().toString().split("/");
+            if (params.length != 4 || params[3].isEmpty()) {
                 this.sendStatus(r, 400);
+                return;
             }
+
+            JSONObject passenger = this.dao.getPassengerTrips(params[3]);
+            JSONObject res = new JSONObject();
+            res.put("data", passenger);
+            System.out.println("got passenger");
+
+            this.sendResponse(r, res, 200);
+
         } catch (Exception e) {
             e.printStackTrace();
+
             this.sendStatus(r, 500);
         }
     }

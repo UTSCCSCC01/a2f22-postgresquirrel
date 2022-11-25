@@ -12,6 +12,7 @@ import io.github.cdimascio.dotenv.Dotenv;
 import org.bson.BsonDocument;
 import org.bson.Document;
 import org.bson.conversions.Bson;
+import org.bson.types.ObjectId;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -22,6 +23,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class MongoDao {
 
@@ -54,7 +56,7 @@ public class MongoDao {
 
 	// *** implement database operations here *** //
 	public JSONObject getDriverTrips(String uid) throws JSONException {
-
+		System.out.println("getting driver trips");
 		Bson filt = Filters.eq("driver", uid);
 		MongoCursor<Document> cursor = collection.find(filt).iterator();
 
@@ -63,24 +65,47 @@ public class MongoDao {
 			list.add(cursor.next());
 		}
 		JSONObject obj = new JSONObject();
+		System.out.println(list);
+
 		obj.put("trips", list);
 
 		return obj;
 	}
 
-	public boolean postConfirmTrip(String driver, String startTime, String passenger) {
+	public JSONObject getPassengerTrips(String uid) throws JSONException {
+
+		System.out.println("getting passenger trips");
+		Bson filt = Filters.eq("passenger", uid);
+		MongoCursor<Document> cursor = collection.find(filt).iterator();
+
+		ArrayList<Document> list = new ArrayList<Document>();
+		while (cursor.hasNext()) {
+			list.add(cursor.next());
+		}
+		JSONObject obj = new JSONObject();
+
+		obj.put("trips", list);
+
+		return obj;
+	}
+
+	public String postConfirmTrip(String driver, String startTime, String passenger) {
 		Document doc = new Document();
 
-		boolean x = true;
+		String x = "";
 		try {
+			ObjectId id = new ObjectId();
+			doc.put("_id", id);
 			doc.put("driver", driver);
 			doc.put("startTime", startTime);
 			doc.put("passenger", passenger);
 			collection.insertOne(doc);
+			x = id.toString();
+
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.out.println("confirm trip error");
-			x = false;
+			x = "";
 		}
 
 		return x;

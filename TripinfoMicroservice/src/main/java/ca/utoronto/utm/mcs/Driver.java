@@ -28,9 +28,11 @@ public class Driver extends Endpoint {
             }
 
             JSONObject driver = this.dao.getDriverTrips(params[3]);
+            JSONObject res = new JSONObject();
+            res.put("data", driver);
             System.out.println("got driver");
 
-            this.sendResponse(r, driver, 200);
+            this.sendResponse(r, res, 200);
 
         } catch (Exception e) {
             e.printStackTrace();
