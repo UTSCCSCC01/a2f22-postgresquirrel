@@ -66,7 +66,8 @@ public class AppTest {
             body.put("uid", "Person1");
             body.put("radius", 2);
 
-            HttpResponse<String> response = sendHttpRequest(new URI("http://localhost:8004/trip/request"), "POST", body);
+            HttpResponse<String> response = sendHttpRequest(new URI("http://localhost:8004/trip/request"), "POST",
+                    body);
             assertEquals(200, response.statusCode());
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -93,7 +94,8 @@ public class AppTest {
             body.put("uid", "Person3");
             body.put("radius", 1);
 
-            HttpResponse<String> response = sendHttpRequest(new URI("http://localhost:8004/trip/request"), "POST", body);
+            HttpResponse<String> response = sendHttpRequest(new URI("http://localhost:8004/trip/request"), "POST",
+                    body);
             assertEquals(404, response.statusCode());
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -142,14 +144,24 @@ public class AppTest {
 
         String uri = "http://localhost:8004/trip/%s";
         // uri.format(uri, id);
-        JSONObject obj = new JSONObject();
+        JSONObject obj1 = new JSONObject();
+        JSONObject obj2 = new JSONObject();
 
         try {
-            obj.put("driver", "goob");
-            obj.put("passenger", "goobagoon");
-            obj.put("nooooo", 123456);
-            HttpResponse<String> res = sendHttpRequest(new URI(uri), "POST", obj);
-            assertEquals(400, res.statusCode());
+            obj1.put("driver", "goob");
+            obj1.put("passenger", "goobagoon");
+            obj1.put("startTime", 123456);
+            HttpResponse<String> resCreate = sendHttpRequest(new URI(uri), "POST", obj1);
+            JSONObject idObj = new JSONObject(resCreate.body());
+            String id = idObj.getJSONObject("data").getString("id");
+            String.format(uri, id);
+            obj2.put("distance", 33);
+            obj2.put("endTime", 323);
+            obj2.put("timeElapsed", 123456);
+            obj2.put("totalCost", 23.45);
+
+            HttpResponse<String> res = sendHttpRequest(new URI(uri), "PATCH", obj2);
+            assertEquals(200, res.statusCode());
 
         } catch (Exception e) {
             // TODO Auto-generated catch block
@@ -159,27 +171,110 @@ public class AppTest {
 
     @Test
     public void patchTripFail() {
-        assertTrue(true);
+        String uri = "http://localhost:8004/trip/%s";
+        // uri.format(uri, id);
+        JSONObject obj = new JSONObject();
+
+        try {
+
+            String id = "a";
+            String.format(uri, id);
+            obj.put("distance", 33);
+            obj.put("endTime", 323);
+            obj.put("timeElapsed", 123456);
+            obj.put("totalCost", 23.45);
+
+            HttpResponse<String> res = sendHttpRequest(new URI(uri), "PATCH", obj);
+            assertEquals(404, res.statusCode());
+
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
     @Test
     public void tripsForPassengerPass() {
-        assertTrue(true);
+        String uri = "http://localhost:8004/trip/passenger/%s";
+        JSONObject obj = new JSONObject();
+
+        try {
+            obj.put("driver", "goob");
+            obj.put("passenger", "goobagoon");
+            obj.put("startTime", 123456);
+            sendHttpRequest(new URI(uri), "GET", obj);
+            String.format(uri, "goobagoon");
+
+            HttpResponse<String> res = sendHttpRequest(new URI(uri), "GET", obj);
+            assertEquals(200, res.statusCode());
+
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
     }
 
     @Test
     public void tripsForPassengerFail() {
-        assertTrue(true);
+        String uri = "http://localhost:8004/trip/passenger/";
+        JSONObject obj = new JSONObject();
+
+        try {
+            obj.put("driver", "goob");
+            obj.put("passenger", "goobagoon");
+            obj.put("startTime", 123456);
+            sendHttpRequest(new URI(uri), "GET", obj);
+
+            HttpResponse<String> res = sendHttpRequest(new URI(uri), "GET", obj);
+            assertEquals(400, res.statusCode());
+
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
     @Test
     public void tripsForDriverPass() {
-        assertTrue(true);
+        String uri = "http://localhost:8004/trip/driver/%s";
+        JSONObject obj = new JSONObject();
+
+        try {
+            obj.put("driver", "goob");
+            obj.put("passenger", "goobagoon");
+            obj.put("startTime", 123456);
+            sendHttpRequest(new URI(uri), "GET", obj);
+
+            String.format(uri, "goob");
+
+            HttpResponse<String> res = sendHttpRequest(new URI(uri), "GET", obj);
+            assertEquals(200, res.statusCode());
+
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
     @Test
     public void tripsForDriverFail() {
-        assertTrue(true);
+        String uri = "http://localhost:8004/trip/driver/";
+        JSONObject obj = new JSONObject();
+
+        try {
+            obj.put("driver", "goob");
+            obj.put("passenger", "goobagoon");
+            obj.put("startTime", 123456);
+            sendHttpRequest(new URI(uri), "GET", obj);
+
+            HttpResponse<String> res = sendHttpRequest(new URI(uri), "GET", obj);
+            assertEquals(400, res.statusCode());
+
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
     @Test
