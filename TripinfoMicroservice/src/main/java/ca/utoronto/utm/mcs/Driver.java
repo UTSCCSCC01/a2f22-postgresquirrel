@@ -28,6 +28,12 @@ public class Driver extends Endpoint {
             }
 
             JSONObject driver = this.dao.getDriverTrips(params[3]);
+
+            JSONObject res = new JSONObject();
+            res.put("data", driver);
+            System.out.println("got driver");
+
+            this.sendResponse(r, res, 200);
             if (driver.has("empty")) {
                 System.out.println("Passenger does not exist");
                 this.sendStatus(r, 404);
