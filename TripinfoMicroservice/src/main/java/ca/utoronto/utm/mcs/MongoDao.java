@@ -107,7 +107,8 @@ public class MongoDao {
 				System.out.println(curr);
 			}
 		} catch (Exception e) {
-			throw new RuntimeException(e);
+			String[] empty = {};
+			return empty;
 		}
 
 		String[] string_list = new String[list.size()];
