@@ -60,6 +60,28 @@ public class MongoDao {
 
 	// *** implement database operations here *** //
 
+	public int getTripDrivetime(String id) {
+		Bson filt = Filters.eq("_id", new ObjectId(id));
+		Document cursor = collection.find(filt).first();
+		try {
+			JSONObject json = new JSONObject(cursor.toJson());
+			String driver_uid = json.getString("driver");
+			String passenger_uid = json.getString("passenger");
+
+			HttpResponse<String> res = sendHttpRequest(new URI("http://locationmicroservice:8000/location/navigation/" + driver_uid + "?passengerUid=" + passenger_uid), "GET", new JSONObject());
+
+			JSONObject json_res = new JSONObject(res.body());
+			System.out.println(json_res.toString());
+
+			JSONObject data = json_res.getJSONObject("data");
+			System.out.println(data.toString());
+
+			return data.getInt("total_time");
+		} catch (Exception e) {
+			return -1;
+		}
+	}
+
 	public String[] postTripRequest(String uid, int radius) {
 		JSONObject body = new JSONObject();
 		ArrayList<String> list = new ArrayList<String>();

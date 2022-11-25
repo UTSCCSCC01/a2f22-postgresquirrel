@@ -1,9 +1,9 @@
 package ca.utoronto.utm.mcs;
 
-/** 
- * Everything you need in order to send and recieve httprequests to 
- * other microservices is given here. Do not use anything else to send 
- * and/or recieve http requests from other microservices. Any other 
+/**
+ * Everything you need in order to send and recieve httprequests to
+ * other microservices is given here. Do not use anything else to send
+ * and/or recieve http requests from other microservices. Any other
  * imports are fine.
  */
 import java.net.http.HttpClient;
@@ -21,7 +21,7 @@ public class Drivetime extends Endpoint {
 
     /**
      * GET /trip/driverTime/:_id
-     * 
+     *
      * @param _id
      * @return 200, 400, 404, 500
      *         Get time taken to get from driver to passenger on the trip with
@@ -32,18 +32,28 @@ public class Drivetime extends Endpoint {
     @Override
     public void handleGet(HttpExchange r) throws IOException, JSONException {
         // TODO
-        System.out.println("getting drivetime");
+        System.out.println("Reached /trip/driverTime/ endpoint");
         try {
-            JSONObject body = new JSONObject(Utils.convert(r.getRequestBody()));
-            if (body.has("_id")) {
-
-                // this.dao.getTripDrivetime(body.getString("_id"));
-                System.out.println("got drivetime");
-                this.sendStatus(r, 200);
-
-            } else {
+            String[] params = r.getRequestURI().toString().split("/");
+            if (params.length != 4 || params[3].isEmpty()) {
                 this.sendStatus(r, 400);
+                return;
             }
+
+            int time = this.dao.getTripDrivetime(params[3]);
+            if (time == -1) {
+                this.sendStatus(r, 404);
+                return;
+            }
+            System.out.println("got drivetime");
+
+            JSONObject res = new JSONObject();
+            JSONObject data = new JSONObject();
+            data.put("arrival_time", time);
+            res.put("data", data);
+            res.put("status", "OK");
+            this.sendResponse(r, res,200);
+
         } catch (Exception e) {
             e.printStackTrace();
             this.sendStatus(r, 500);
