@@ -35,7 +35,7 @@ public class Trip extends Endpoint {
 
                 // this.dao.patchTrip(body.getString("_id"));
                 long p = this.dao.patchTrip(params[2], body.getInt("distance"),
-                        body.getLong("endTime"), body.getLong("timeElasped"), body.getDouble("totalCost"));
+                        body.getLong("endTime"), body.getLong("timeElapsed"), body.getDouble("totalCost"));
                 if (p > 0) {
                     System.out.println("patched trip");
                     this.sendStatus(r, 200);

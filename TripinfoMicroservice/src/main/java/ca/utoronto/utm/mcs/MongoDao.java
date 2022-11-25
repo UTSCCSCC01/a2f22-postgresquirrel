@@ -154,7 +154,7 @@ public class MongoDao {
 
 	}
 
-	public long patchTrip(String id, int distance, long endTime, long timeElasped, double totalCost) {
+	public long patchTrip(String id, int distance, long endTime, long timeElapsed, double totalCost) {
 		System.out.println("updating");
 
 		Bson filt = Filters.eq("_id", new ObjectId(id));
@@ -162,7 +162,7 @@ public class MongoDao {
 		Bson updates = Updates.combine(
 				Updates.set("distance", distance),
 				Updates.set("endTime", endTime),
-				Updates.set("timeElasped", timeElasped),
+				Updates.set("timeElapsed", timeElapsed),
 				Updates.set("totalCost", totalCost));
 
 		UpdateOptions options = new UpdateOptions().upsert(true);
