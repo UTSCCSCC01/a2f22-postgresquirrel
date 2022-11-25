@@ -23,10 +23,14 @@ public class Confirm extends Endpoint {
             JSONObject body = new JSONObject(Utils.convert(r.getRequestBody()));
             if (body.has("driver") && body.has("startTime") && body.has("passenger")) {
 
-                this.dao.postTripConfirm(body.getString("driver"), body.getString("startTime"),
-                        body.getString("passenger"));
-                System.out.println("confirm");
-                this.sendStatus(r, 200);
+                if (this.dao.postConfirmTrip(body.getString("driver"), body.getString("startTime"),
+                        body.getString("passenger"))) {
+                    System.out.println("confirmed");
+                    this.sendStatus(r, 200);
+                } else {
+                    System.out.println("fail to confirm");
+                    this.sendStatus(r, 400);
+                }
 
             } else {
                 this.sendStatus(r, 400);

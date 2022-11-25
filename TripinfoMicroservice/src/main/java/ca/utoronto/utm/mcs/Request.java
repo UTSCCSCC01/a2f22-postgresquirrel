@@ -37,7 +37,7 @@ public class Request extends Endpoint {
             JSONObject body = new JSONObject(Utils.convert(r.getRequestBody()));
             if (body.has("uid") && body.has("radius")) {
 
-                String[] drivers = this.dao.postTripRequest(body.getString("uid"), body.getString("radius"));
+                //String[] drivers = this.dao.postTripRequest(body.getString("uid"), body.getString("radius"));
                 System.out.println("posted request");
                 this.sendStatus(r, 200);
 

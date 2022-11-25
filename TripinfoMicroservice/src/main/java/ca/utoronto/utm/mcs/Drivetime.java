@@ -37,7 +37,7 @@ public class Drivetime extends Endpoint {
             JSONObject body = new JSONObject(Utils.convert(r.getRequestBody()));
             if (body.has("_id")) {
 
-                this.dao.getTripDrivetime(body.getString("_id"));
+                // this.dao.getTripDrivetime(body.getString("_id"));
                 System.out.println("got drivetime");
                 this.sendStatus(r, 200);
 

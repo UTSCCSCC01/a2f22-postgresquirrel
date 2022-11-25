@@ -27,7 +27,7 @@ public class Trip extends Endpoint {
             JSONObject body = new JSONObject(Utils.convert(r.getRequestBody()));
             if (body.has("_id")) {
 
-                this.dao.patchTrip(body.getString("_id"));
+                //this.dao.patchTrip(body.getString("_id"));
                 System.out.println("patched trip");
                 this.sendStatus(r, 200);
 

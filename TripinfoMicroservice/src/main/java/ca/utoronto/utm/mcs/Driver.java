@@ -3,6 +3,7 @@ package ca.utoronto.utm.mcs;
 import com.sun.net.httpserver.HttpExchange;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.bson.Document;
 
 import java.io.IOException;
 
@@ -20,19 +21,20 @@ public class Driver extends Endpoint {
     public void handleGet(HttpExchange r) throws IOException, JSONException {
         System.out.println("getting driver");
         try {
-            JSONObject body = new JSONObject(Utils.convert(r.getRequestBody()));
-            if (body.has("uid")) {
-
-                JSONObject driver = this.dao.getTripDriver(body.getString("uid"));
-                System.out.println("got driver");
-
-                this.sendResponse(r, driver, 200);
-
-            } else {
+            String[] params = r.getRequestURI().toString().split("/");
+            if (params.length != 4 || params[3].isEmpty()) {
                 this.sendStatus(r, 400);
+                return;
             }
+
+            JSONObject driver = this.dao.getDriverTrips(params[3]);
+            System.out.println("got driver");
+
+            this.sendResponse(r, driver, 200);
+
         } catch (Exception e) {
             e.printStackTrace();
+
             this.sendStatus(r, 500);
         }
     }

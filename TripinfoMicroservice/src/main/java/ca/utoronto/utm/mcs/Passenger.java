@@ -24,7 +24,7 @@ public class Passenger extends Endpoint {
             JSONObject body = new JSONObject(Utils.convert(r.getRequestBody()));
             if (body.has("uid")) {
 
-                Object[] driver = this.dao.getTripPassenger(body.getString("uid"));
+                // Object[] driver = this.dao.getTripPassenger(body.getString("uid"));
                 System.out.println("got passenger");
                 this.sendStatus(r, 200);
 
