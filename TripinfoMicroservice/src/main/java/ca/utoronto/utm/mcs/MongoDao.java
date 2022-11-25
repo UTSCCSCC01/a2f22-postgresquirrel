@@ -24,6 +24,7 @@ import java.net.http.HttpResponse;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 
 public class MongoDao {
 
@@ -55,6 +56,42 @@ public class MongoDao {
 	}
 
 	// *** implement database operations here *** //
+
+	public String[] postTripRequest(String uid, int radius) {
+		JSONObject body = new JSONObject();
+		ArrayList<String> list = new ArrayList<String>();
+		try {
+			body.put("uid", uid);
+			body.put("radius", radius);
+			System.out.println("Sending to microservice...");
+			HttpResponse<String> res = sendHttpRequest(new URI("http://locationmicroservice:8000/location/nearbyDriver/" + uid + "?radius=" + radius), "GET", body);
+
+			JSONObject json_res = new JSONObject(res.body());
+			System.out.println(json_res.toString());
+
+			JSONObject data = json_res.getJSONObject("data");
+			System.out.println(data.toString());
+
+			Iterator<String> keys = data.keys();
+
+			while (keys.hasNext()) {
+				String curr = keys.next();
+				list.add(curr);
+				System.out.println(curr);
+			}
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+
+		String[] string_list = new String[list.size()];
+		int i = 0;
+		for (String item : list) {
+			string_list[i] = item;
+			i++;
+		}
+		return string_list;
+	}
+
 	public JSONObject getDriverTrips(String uid) throws JSONException {
 		System.out.println("getting driver trips");
 		Bson filt = Filters.eq("driver", uid);

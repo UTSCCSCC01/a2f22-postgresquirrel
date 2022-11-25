@@ -32,14 +32,22 @@ public class Request extends Endpoint {
     @Override
     public void handlePost(HttpExchange r) throws IOException, JSONException {
         // TODO
-        System.out.println("posting request");
+        System.out.println("Reached /trip/request endpoint");
         try {
             JSONObject body = new JSONObject(Utils.convert(r.getRequestBody()));
             if (body.has("uid") && body.has("radius")) {
+                String[] drivers = this.dao.postTripRequest(body.getString("uid"), body.getInt("radius"));
 
-                //String[] drivers = this.dao.postTripRequest(body.getString("uid"), body.getString("radius"));
+                if (drivers.length < 1) {
+                    this.sendStatus(r, 404);
+                }
+
+                JSONObject res = new JSONObject();
+                res.put("data", drivers);
+                res.put("status", "OK");
+
                 System.out.println("posted request");
-                this.sendStatus(r, 200);
+                this.sendResponse(r, res,200);
 
             } else {
                 this.sendStatus(r, 400);
