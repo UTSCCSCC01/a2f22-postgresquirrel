@@ -37,13 +37,67 @@ public class AppTest {
 
     @Test
     public void tripRequestPass() {
+        JSONObject person1 = new JSONObject();
+        JSONObject person2 = new JSONObject();
+        JSONObject relocate1 = new JSONObject();
+        JSONObject relocate2 = new JSONObject();
+        JSONObject body = new JSONObject();
+        try {
+            person1.put("uid", "Person1");
+            person1.put("is_driver", false);
 
-        assertTrue(true);
+            person2.put("uid", "Person2");
+            person2.put("is_driver", true);
+
+            sendHttpRequest(new URI("http://localhost:8004/location/user"), "PUT", person1);
+            sendHttpRequest(new URI("http://localhost:8004/location/user"), "PUT", person2);
+
+            relocate1.put("longitude", 0.5);
+            relocate1.put("latitude", 1.5);
+            relocate1.put("street", "Street street");
+
+            relocate2.put("longitude", 1.5);
+            relocate2.put("latitude", 2.5);
+            relocate2.put("street", "Street street");
+
+            sendHttpRequest(new URI("http://localhost:8004/location/Person1"), "PATCH", relocate1);
+            sendHttpRequest(new URI("http://localhost:8004/location/Person2"), "PATCH", relocate2);
+
+            body.put("uid", "Person1");
+            body.put("radius", 2);
+
+            HttpResponse<String> response = sendHttpRequest(new URI("http://localhost:8004/trip/request"), "POST", body);
+            assertEquals(200, response.statusCode());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Test
     public void tripRequestFail() {
-        assertTrue(true);
+        JSONObject person3 = new JSONObject();
+        JSONObject relocate3 = new JSONObject();
+        JSONObject body = new JSONObject();
+        try {
+            person3.put("uid", "Person1");
+            person3.put("is_driver", false);
+
+            sendHttpRequest(new URI("http://localhost:8004/location/user"), "PUT", person3);
+
+            relocate3.put("longitude", 500.5);
+            relocate3.put("latitude", 501.5);
+            relocate3.put("street", "Street street");
+
+            sendHttpRequest(new URI("http://localhost:8004/location/Person1"), "PATCH", relocate3);
+
+            body.put("uid", "Person3");
+            body.put("radius", 1);
+
+            HttpResponse<String> response = sendHttpRequest(new URI("http://localhost:8004/trip/request"), "POST", body);
+            assertEquals(404, response.statusCode());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Test
