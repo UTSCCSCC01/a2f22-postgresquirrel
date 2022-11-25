@@ -22,7 +22,7 @@ public class Confirm extends Endpoint {
         try {
             JSONObject body = new JSONObject(Utils.convert(r.getRequestBody()));
             if (body.has("driver") && body.has("startTime") && body.has("passenger")) {
-                String id = this.dao.postConfirmTrip(body.getString("driver"), body.getString("startTime"),
+                String id = this.dao.postConfirmTrip(body.getString("driver"), body.getLong("startTime"),
                         body.getString("passenger"));
                 if (id != "") {
                     System.out.println("confirmed");

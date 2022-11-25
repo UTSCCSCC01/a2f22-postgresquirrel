@@ -6,6 +6,9 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Projections;
+import com.mongodb.client.model.UpdateOptions;
+import com.mongodb.client.model.Updates;
+import com.mongodb.client.result.UpdateResult;
 import com.mongodb.client.model.Filters;
 import io.github.cdimascio.dotenv.Dotenv;
 
@@ -64,7 +67,9 @@ public class MongoDao {
 			body.put("uid", uid);
 			body.put("radius", radius);
 			System.out.println("Sending to microservice...");
-			HttpResponse<String> res = sendHttpRequest(new URI("http://locationmicroservice:8000/location/nearbyDriver/" + uid + "?radius=" + radius), "GET", body);
+			HttpResponse<String> res = sendHttpRequest(
+					new URI("http://locationmicroservice:8000/location/nearbyDriver/" + uid + "?radius=" + radius),
+					"GET", body);
 
 			JSONObject json_res = new JSONObject(res.body());
 			System.out.println(json_res.toString());
@@ -126,7 +131,7 @@ public class MongoDao {
 		return obj;
 	}
 
-	public String postConfirmTrip(String driver, String startTime, String passenger) {
+	public String postConfirmTrip(String driver, long startTime, String passenger) {
 		Document doc = new Document();
 
 		String x = "";
@@ -146,6 +151,30 @@ public class MongoDao {
 		}
 
 		return x;
+
+	}
+
+	public long patchTrip(String id, int distance, long endTime, long timeElasped, double totalCost) {
+		System.out.println("updating");
+
+		Bson filt = Filters.eq("_id", new ObjectId(id));
+
+		Bson updates = Updates.combine(
+				Updates.set("distance", distance),
+				Updates.set("endTime", endTime),
+				Updates.set("timeElasped", timeElasped),
+				Updates.set("totalCost", totalCost));
+
+		UpdateOptions options = new UpdateOptions().upsert(true);
+		try {
+			UpdateResult doc = collection.updateOne(filt, updates, options);
+			System.out.println("updated");
+			return doc.getModifiedCount();
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println(" issue with updating");
+			return 0;
+		}
 
 	}
 
