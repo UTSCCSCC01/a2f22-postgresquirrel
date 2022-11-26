@@ -11,6 +11,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
 
+import com.mongodb.util.JSON;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
@@ -142,7 +143,8 @@ public class AppTest {
     @Test
     public void patchTripPass() {
 
-        String uri = "http://localhost:8004/trip/%s";
+        String uri = "http://localhost:8004/trip/";
+        String uri2 = "http://localhost:8004/trip/confirm";
         // uri.format(uri, id);
         JSONObject obj1 = new JSONObject();
         JSONObject obj2 = new JSONObject();
@@ -151,10 +153,10 @@ public class AppTest {
             obj1.put("driver", "goob");
             obj1.put("passenger", "goobagoon");
             obj1.put("startTime", 123456);
-            HttpResponse<String> resCreate = sendHttpRequest(new URI(uri), "POST", obj1);
+            HttpResponse<String> resCreate = sendHttpRequest(new URI(uri2), "POST", obj1);
             JSONObject idObj = new JSONObject(resCreate.body());
             String id = idObj.getJSONObject("data").getString("id");
-            String.format(uri, id);
+            uri = uri + id;
             obj2.put("distance", 33);
             obj2.put("endTime", 323);
             obj2.put("timeElapsed", 123456);
@@ -171,14 +173,12 @@ public class AppTest {
 
     @Test
     public void patchTripFail() {
-        String uri = "http://localhost:8004/trip/%s";
+        String uri = "http://localhost:8004/trip/wrongId";
         // uri.format(uri, id);
         JSONObject obj = new JSONObject();
 
         try {
 
-            String id = "a";
-            String.format(uri, id);
             obj.put("distance", 33);
             obj.put("endTime", 323);
             obj.put("timeElapsed", 123456);
@@ -195,16 +195,17 @@ public class AppTest {
 
     @Test
     public void tripsForPassengerPass() {
-        String uri = "http://localhost:8004/trip/passenger/goobagoon";
+        String uri1 = "http://localhost:8004/trip/confirm";
+        String uri2 = "http://localhost:8004/trip/passenger/%s";
         JSONObject obj = new JSONObject();
 
         try {
             obj.put("driver", "goob");
             obj.put("passenger", "goobagoon");
             obj.put("startTime", 123456);
-            sendHttpRequest(new URI(uri), "GET", obj);
+            sendHttpRequest(new URI(uri1), "POST", obj);
 
-            HttpResponse<String> res = sendHttpRequest(new URI(uri), "GET", obj);
+            HttpResponse<String> res = sendHttpRequest(new URI(uri2), "GET", obj);
             assertEquals(200, res.statusCode());
 
         } catch (Exception e) {
@@ -216,13 +217,11 @@ public class AppTest {
 
     @Test
     public void tripsForPassengerFail() {
-        String uri = "http://localhost:8004/trip/passenger/shouldnotexist";
+        String uri = "http://localhost:8004/trip/passenger/doesnotexists";
         JSONObject obj = new JSONObject();
 
         try {
-            obj.put("driver", "goob");
-            obj.put("passenger", "goobagoon");
-            obj.put("startTime", 123456);
+
             sendHttpRequest(new URI(uri), "GET", obj);
 
             HttpResponse<String> res = sendHttpRequest(new URI(uri), "GET", obj);
@@ -236,16 +235,17 @@ public class AppTest {
 
     @Test
     public void tripsForDriverPass() {
-        String uri = "http://localhost:8004/trip/driver/goob";
+        String uri1 = "http://localhost:8004/trip/confirm";
+        String uri2 = "http://localhost:8004/trip/driver/goob";
         JSONObject obj = new JSONObject();
 
         try {
             obj.put("driver", "goob");
             obj.put("passenger", "goobagoon");
             obj.put("startTime", 123456);
-            sendHttpRequest(new URI(uri), "GET", obj);
+            sendHttpRequest(new URI(uri1), "POST", obj);
 
-            HttpResponse<String> res = sendHttpRequest(new URI(uri), "GET", obj);
+            HttpResponse<String> res = sendHttpRequest(new URI(uri2), "GET", obj);
             assertEquals(200, res.statusCode());
 
         } catch (Exception e) {
@@ -256,16 +256,17 @@ public class AppTest {
 
     @Test
     public void tripsForDriverFail() {
-        String uri = "http://localhost:8004/trip/driver/";
+        String uri1 = "http://localhost:8004/trip/confirm";
+        String uri2 = "http://localhost:8004/trip/driver/";
         JSONObject obj = new JSONObject();
 
         try {
             obj.put("driver", "goob");
             obj.put("passenger", "goobagoon");
             obj.put("startTime", 123456);
-            sendHttpRequest(new URI(uri), "GET", obj);
+            sendHttpRequest(new URI(uri1), "POST", obj);
 
-            HttpResponse<String> res = sendHttpRequest(new URI(uri), "GET", obj);
+            HttpResponse<String> res = sendHttpRequest(new URI(uri2), "GET", obj);
             assertEquals(400, res.statusCode());
 
         } catch (Exception e) {
@@ -276,12 +277,86 @@ public class AppTest {
 
     @Test
     public void driverTimePass() {
-        assertTrue(true);
+        JSONObject person5 = new JSONObject();
+        JSONObject person6 = new JSONObject();
+        JSONObject relocate5 = new JSONObject();
+        JSONObject relocate6 = new JSONObject();
+        JSONObject road1 = new JSONObject();
+        JSONObject road2 = new JSONObject();
+        JSONObject connection1 = new JSONObject();
+        JSONObject connection2 = new JSONObject();
+        JSONObject body = new JSONObject();
+
+        try {
+            person5.put("uid", "Person5");
+            person5.put("is_driver", false);
+
+            person6.put("uid", "Person6");
+            person6.put("is_driver", true);
+
+            sendHttpRequest(new URI("http://localhost:8004/location/user"), "PUT", person5);
+            sendHttpRequest(new URI("http://localhost:8004/location/user"), "PUT", person6);
+
+            relocate5.put("longitude", 0.5);
+            relocate5.put("latitude", 1.5);
+            relocate5.put("street", "Street street");
+
+            relocate6.put("longitude", 1.5);
+            relocate6.put("latitude", 2.5);
+            relocate6.put("street", "Road road");
+
+            sendHttpRequest(new URI("http://localhost:8004/location/Person5"), "PATCH", relocate5);
+            sendHttpRequest(new URI("http://localhost:8004/location/Person6"), "PATCH", relocate6);
+
+            road1.put("roadName", "Street street");
+            road1.put("hasTraffic", false);
+
+            road2.put("roadName", "Road road");
+            road2.put("hasTraffic", false);
+
+            sendHttpRequest(new URI("http://localhost:8004/location/road"), "PUT", road1);
+            sendHttpRequest(new URI("http://localhost:8004/location/road"), "PUT", road2);
+
+            connection1.put("roadName1", "Street street");
+            connection1.put("roadName2", "Road road");
+            connection1.put("hasTraffic", false);
+            connection1.put("time", 2);
+
+            connection2.put("roadName1", "Road road");
+            connection2.put("roadName2", "Street street");
+            connection2.put("hasTraffic", false);
+            connection2.put("time", 2);
+
+            sendHttpRequest(new URI("http://localhost:8004/location/hasRoute"), "POST", connection1);
+            sendHttpRequest(new URI("http://localhost:8004/location/hasRoute"), "POST", connection2);
+
+            body.put("driver", "Person5");
+            body.put("passenger", "Person6");
+            body.put("startTime", 123456);
+
+            HttpResponse<String> confirm_res = sendHttpRequest(new URI("http://localhost:8004/trip/confirm"), "POST",
+                    body);
+
+            JSONObject json = new JSONObject(confirm_res.body());
+            JSONObject data = json.getJSONObject("data");
+            String id = data.getString("id");
+            HttpResponse<String> response = sendHttpRequest(new URI("http://localhost:8004/trip/driverTime/" + id),
+                    "GET", new JSONObject());
+            assertEquals(200, response.statusCode());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Test
     public void driverTimeFail() {
-        assertTrue(true);
+        try {
+            HttpResponse<String> response = sendHttpRequest(new URI("http://localhost:8004/trip/driverTime/"), "GET",
+                    new JSONObject());
+            assertEquals(400, response.statusCode());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }
