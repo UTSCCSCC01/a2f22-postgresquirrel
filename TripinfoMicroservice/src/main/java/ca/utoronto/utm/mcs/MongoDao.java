@@ -68,7 +68,8 @@ public class MongoDao {
 			String driver_uid = json.getString("driver");
 			String passenger_uid = json.getString("passenger");
 
-			HttpResponse<String> res = sendHttpRequest(new URI("http://locationmicroservice:8000/location/navigation/" + driver_uid + "?passengerUid=" + passenger_uid), "GET", new JSONObject());
+			HttpResponse<String> res = sendHttpRequest(new URI("http://locationmicroservice:8000/location/navigation/"
+					+ driver_uid + "?passengerUid=" + passenger_uid), "GET", new JSONObject());
 
 			JSONObject json_res = new JSONObject(res.body());
 			System.out.println(json_res.toString());
@@ -126,10 +127,15 @@ public class MongoDao {
 		MongoCursor<Document> cursor = collection.find(filt).iterator();
 
 		ArrayList<Document> list = new ArrayList<Document>();
+		JSONObject obj = new JSONObject();
+
+		if (!cursor.hasNext()) {
+			obj.put("empty", "");
+			return obj;
+		}
 		while (cursor.hasNext()) {
 			list.add(cursor.next());
 		}
-		JSONObject obj = new JSONObject();
 		System.out.println(list);
 
 		obj.put("trips", list);
@@ -144,10 +150,15 @@ public class MongoDao {
 		MongoCursor<Document> cursor = collection.find(filt).iterator();
 
 		ArrayList<Document> list = new ArrayList<Document>();
+		JSONObject obj = new JSONObject();
+
+		if (!cursor.hasNext()) {
+			obj.put("empty", "");
+			return obj;
+		}
 		while (cursor.hasNext()) {
 			list.add(cursor.next());
 		}
-		JSONObject obj = new JSONObject();
 
 		obj.put("trips", list);
 
