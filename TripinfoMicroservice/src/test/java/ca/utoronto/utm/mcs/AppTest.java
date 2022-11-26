@@ -337,12 +337,14 @@ public class AppTest {
             body.put("passenger", "Person6");
             body.put("startTime", 123456);
 
-            HttpResponse<String> confirm_res = sendHttpRequest(new URI("http://localhost:8004/trip/confirm"), "POST", body);
+            HttpResponse<String> confirm_res = sendHttpRequest(new URI("http://localhost:8004/trip/confirm"), "POST",
+                    body);
 
             JSONObject json = new JSONObject(confirm_res.body());
             JSONObject data = json.getJSONObject("data");
             String id = data.getString("id");
-            HttpResponse<String> response = sendHttpRequest(new URI("http://localhost:8004/trip/driverTime/" + id), "GET", new JSONObject());
+            HttpResponse<String> response = sendHttpRequest(new URI("http://localhost:8004/trip/driverTime/" + id),
+                    "GET", new JSONObject());
             assertEquals(200, response.statusCode());
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -352,7 +354,8 @@ public class AppTest {
     @Test
     public void driverTimeFail() {
         try {
-            HttpResponse<String> response = sendHttpRequest(new URI("http://localhost:8004/trip/driverTime/"), "GET", new JSONObject());
+            HttpResponse<String> response = sendHttpRequest(new URI("http://localhost:8004/trip/driverTime/"), "GET",
+                    new JSONObject());
             assertEquals(400, response.statusCode());
         } catch (Exception e) {
             throw new RuntimeException(e);
