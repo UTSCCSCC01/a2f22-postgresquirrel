@@ -143,7 +143,8 @@ public class AppTest {
     @Test
     public void patchTripPass() {
 
-        String uri = "http://localhost:8004/trip/%s";
+        String uri = "http://localhost:8004/trip/";
+        String uri2 = "http://localhost:8004/trip/confirm";
         // uri.format(uri, id);
         JSONObject obj1 = new JSONObject();
         JSONObject obj2 = new JSONObject();
@@ -152,10 +153,10 @@ public class AppTest {
             obj1.put("driver", "goob");
             obj1.put("passenger", "goobagoon");
             obj1.put("startTime", 123456);
-            HttpResponse<String> resCreate = sendHttpRequest(new URI(uri), "POST", obj1);
+            HttpResponse<String> resCreate = sendHttpRequest(new URI(uri2), "POST", obj1);
             JSONObject idObj = new JSONObject(resCreate.body());
             String id = idObj.getJSONObject("data").getString("id");
-            String.format(uri, id);
+            uri = uri + id;
             obj2.put("distance", 33);
             obj2.put("endTime", 323);
             obj2.put("timeElapsed", 123456);
@@ -172,14 +173,12 @@ public class AppTest {
 
     @Test
     public void patchTripFail() {
-        String uri = "http://localhost:8004/trip/%s";
+        String uri = "http://localhost:8004/trip/wrongId";
         // uri.format(uri, id);
         JSONObject obj = new JSONObject();
 
         try {
 
-            String id = "a";
-            String.format(uri, id);
             obj.put("distance", 33);
             obj.put("endTime", 323);
             obj.put("timeElapsed", 123456);
@@ -196,17 +195,17 @@ public class AppTest {
 
     @Test
     public void tripsForPassengerPass() {
-        String uri = "http://localhost:8004/trip/passenger/%s";
+        String uri1 = "http://localhost:8004/trip/confirm";
+        String uri2 = "http://localhost:8004/trip/passenger/%s";
         JSONObject obj = new JSONObject();
 
         try {
             obj.put("driver", "goob");
             obj.put("passenger", "goobagoon");
             obj.put("startTime", 123456);
-            sendHttpRequest(new URI(uri), "GET", obj);
-            String.format(uri, "goobagoon");
+            sendHttpRequest(new URI(uri1), "POST", obj);
 
-            HttpResponse<String> res = sendHttpRequest(new URI(uri), "GET", obj);
+            HttpResponse<String> res = sendHttpRequest(new URI(uri2), "GET", obj);
             assertEquals(200, res.statusCode());
 
         } catch (Exception e) {
@@ -218,17 +217,15 @@ public class AppTest {
 
     @Test
     public void tripsForPassengerFail() {
-        String uri = "http://localhost:8004/trip/passenger/";
+        String uri = "http://localhost:8004/trip/passenger/doesnotexists";
         JSONObject obj = new JSONObject();
 
         try {
-            obj.put("driver", "goob");
-            obj.put("passenger", "goobagoon");
-            obj.put("startTime", 123456);
+
             sendHttpRequest(new URI(uri), "GET", obj);
 
             HttpResponse<String> res = sendHttpRequest(new URI(uri), "GET", obj);
-            assertEquals(400, res.statusCode());
+            assertEquals(404, res.statusCode());
 
         } catch (Exception e) {
             // TODO Auto-generated catch block
@@ -238,18 +235,17 @@ public class AppTest {
 
     @Test
     public void tripsForDriverPass() {
-        String uri = "http://localhost:8004/trip/driver/%s";
+        String uri1 = "http://localhost:8004/trip/confirm";
+        String uri2 = "http://localhost:8004/trip/driver/goob";
         JSONObject obj = new JSONObject();
 
         try {
             obj.put("driver", "goob");
             obj.put("passenger", "goobagoon");
             obj.put("startTime", 123456);
-            sendHttpRequest(new URI(uri), "GET", obj);
+            sendHttpRequest(new URI(uri1), "POST", obj);
 
-            String.format(uri, "goob");
-
-            HttpResponse<String> res = sendHttpRequest(new URI(uri), "GET", obj);
+            HttpResponse<String> res = sendHttpRequest(new URI(uri2), "GET", obj);
             assertEquals(200, res.statusCode());
 
         } catch (Exception e) {
@@ -260,16 +256,17 @@ public class AppTest {
 
     @Test
     public void tripsForDriverFail() {
-        String uri = "http://localhost:8004/trip/driver/";
+        String uri1 = "http://localhost:8004/trip/confirm";
+        String uri2 = "http://localhost:8004/trip/driver/";
         JSONObject obj = new JSONObject();
 
         try {
             obj.put("driver", "goob");
             obj.put("passenger", "goobagoon");
             obj.put("startTime", 123456);
-            sendHttpRequest(new URI(uri), "GET", obj);
+            sendHttpRequest(new URI(uri1), "POST", obj);
 
-            HttpResponse<String> res = sendHttpRequest(new URI(uri), "GET", obj);
+            HttpResponse<String> res = sendHttpRequest(new URI(uri2), "GET", obj);
             assertEquals(400, res.statusCode());
 
         } catch (Exception e) {
