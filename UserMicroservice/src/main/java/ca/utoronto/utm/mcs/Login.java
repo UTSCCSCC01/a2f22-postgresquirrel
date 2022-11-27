@@ -24,13 +24,21 @@ public class Login extends Endpoint {
         JSONObject body = new JSONObject(Utils.convert(r.getRequestBody()));
         if (body.has("email") && body.has("password")) {
             try {
-                ResultSet rs = this.dao.postLoginUser(body.getString("email"), body.getString("password"));
-                System.out.println("logged in");
-                if (rs.next()) {
-                    this.sendStatus(r, 200);
-                } else {
+
+                int status = this.dao.postLoginUser(body.getString("email"), body.getString("password"));
+                if (!this.dao.checkUserExists(body.getString("email"))) {
+                    System.out.println("User does not exist");
                     this.sendStatus(r, 404);
+                    return;
                 }
+                if (status == 1) {
+                    System.out.println("logged in");
+                    this.sendStatus(r, 200);
+                } else if (status == 2) {
+                    System.out.println("Unauthorized");
+                    this.sendStatus(r, 401);
+                }
+
             } catch (Exception e) {
                 e.printStackTrace();
                 this.sendStatus(r, 500);

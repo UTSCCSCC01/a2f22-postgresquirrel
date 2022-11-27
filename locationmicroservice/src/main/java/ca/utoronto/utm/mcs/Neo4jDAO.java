@@ -91,7 +91,9 @@ public class Neo4jDAO {
         String query =
                 "MATCH (u:user {uid: '%s'}) " +
                 "MATCH (d:user {is_driver: true}) " +
-                    "WHERE (abs(u.longitude - d.longitude) <= %d AND abs(u.latitude - d.latitude) <= %d) " +
+
+                    "WHERE ((u.longitude - d.longitude)^2 + (u.latitude - d.latitude)^2 <= %d^2) " +
+
                 "RETURN d.uid, d.longitude, d.latitude, d.street";
         query = String.format(query, uid, radius, radius);
         System.out.println(query);

@@ -23,9 +23,19 @@ public class Register extends Endpoint {
         JSONObject body = new JSONObject(Utils.convert(r.getRequestBody()));
         if (body.has("name") && body.has("email") && body.has("password")) {
             try {
-                this.dao.postRegisterUser(body.getString("name"), body.getString("email"), body.getString("password"));
-                System.out.println("registered");
-                this.sendStatus(r, 200);
+
+
+                if (this.dao.checkUserExists(body.getString("email"))) {
+                    this.sendStatus(r, 400);
+                    return;
+                }
+                int status = this.dao.postRegisterUser(body.getString("name"), body.getString("email"),
+                        body.getString("password"));
+                if (status == 1) {
+                    System.out.println("registered");
+                    this.sendStatus(r, 200);
+                }
+
 
             } catch (Exception e) {
                 e.printStackTrace();
