@@ -1,8 +1,5 @@
 package ca.utoronto.utm.mcs;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
 
@@ -12,6 +9,8 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Please write your tests in this class.
@@ -52,6 +51,7 @@ public class AppTest {
                     user1);
             assertEquals(200, response.statusCode());
         } catch (Exception e) {
+            fail();
             throw new RuntimeException(e);
         }
     }
@@ -67,6 +67,7 @@ public class AppTest {
                     user2);
             assertEquals(400, response.statusCode());
         } catch (Exception e) {
+            fail();
             throw new RuntimeException(e);
         }
     }
@@ -84,6 +85,7 @@ public class AppTest {
             HttpResponse<String> response = sendHttpRequest(new URI("http://localhost:8004/user/login"), "POST", user3);
             assertEquals(200, response.statusCode());
         } catch (Exception e) {
+            fail();
             throw new RuntimeException(e);
         }
     }
@@ -97,6 +99,7 @@ public class AppTest {
             HttpResponse<String> response = sendHttpRequest(new URI("http://localhost:8004/user/login"), "POST", user4);
             assertEquals(400, response.statusCode());
         } catch (Exception e) {
+            fail();
             throw new RuntimeException(e);
         }
     }

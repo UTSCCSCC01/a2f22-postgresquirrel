@@ -1,8 +1,5 @@
 package ca.utoronto.utm.mcs;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import io.github.cdimascio.dotenv.Dotenv;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -15,6 +12,8 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Please write your tests in this class. 
@@ -72,6 +71,7 @@ public class AppTest {
             HttpResponse<String> response = sendHttpRequest(new URI("http://localhost:8004/location/nearbyDriver/Person1?radius=5"), "GET", new JSONObject());
             assertEquals(200, response.statusCode());
         } catch (Exception e) {
+            fail();
             throw new RuntimeException(e);
         }
     }
@@ -106,6 +106,7 @@ public class AppTest {
             HttpResponse<String> response = sendHttpRequest(new URI("http://localhost:8004/location/nearbyDriver/Person3?radius=1"), "GET", new JSONObject());
             assertEquals(404, response.statusCode());
         } catch (Exception e) {
+            fail();
             throw new RuntimeException(e);
         }
     }
@@ -166,6 +167,7 @@ public class AppTest {
             HttpResponse<String> response = sendHttpRequest(new URI("http://localhost:8004/location/navigation/Person6?passengerUid=Person5"), "GET", new JSONObject());
             assertEquals(200, response.statusCode());
         } catch (Exception e) {
+            fail();
             throw new RuntimeException(e);
         }
     }
@@ -226,6 +228,7 @@ public class AppTest {
             HttpResponse<String> response = sendHttpRequest(new URI("http://localhost:8004/location/navigation/Person8?passengerUid=Person7"), "GET", new JSONObject());
             assertEquals(404, response.statusCode());
         } catch (Exception e) {
+            fail();
             throw new RuntimeException(e);
         }
     }
