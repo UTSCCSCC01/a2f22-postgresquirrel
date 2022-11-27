@@ -8,7 +8,9 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
 
+
 import com.mongodb.util.JSON;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
@@ -70,7 +72,9 @@ public class AppTest {
                     body);
             assertEquals(200, response.statusCode());
         } catch (Exception e) {
+
             fail();
+
             throw new RuntimeException(e);
         }
     }
@@ -99,7 +103,9 @@ public class AppTest {
                     body);
             assertEquals(404, response.statusCode());
         } catch (Exception e) {
+
             fail();
+
             throw new RuntimeException(e);
         }
     }
@@ -117,7 +123,9 @@ public class AppTest {
             assertEquals(200, res.statusCode());
 
         } catch (Exception e) {
+
             fail();
+
             e.printStackTrace();
         }
 
@@ -136,7 +144,9 @@ public class AppTest {
             assertEquals(400, res.statusCode());
 
         } catch (Exception e) {
+
             fail();
+
             e.printStackTrace();
         }
     }
@@ -144,8 +154,10 @@ public class AppTest {
     @Test
     public void patchTripPass() {
 
+
         String uri = "http://localhost:8004/trip/";
         String uri2 = "http://localhost:8004/trip/confirm";
+
         // uri.format(uri, id);
         JSONObject obj1 = new JSONObject();
         JSONObject obj2 = new JSONObject();
@@ -154,10 +166,12 @@ public class AppTest {
             obj1.put("driver", "goob");
             obj1.put("passenger", "goobagoon");
             obj1.put("startTime", 123456);
+
             HttpResponse<String> resCreate = sendHttpRequest(new URI(uri2), "POST", obj1);
             JSONObject idObj = new JSONObject(resCreate.body());
             String id = idObj.getJSONObject("data").getString("_id");
             uri = uri + id;
+
             obj2.put("distance", 33);
             obj2.put("endTime", 323);
             obj2.put("timeElapsed", 123456);
@@ -167,18 +181,23 @@ public class AppTest {
             assertEquals(200, res.statusCode());
 
         } catch (Exception e) {
+
             fail();
+
             e.printStackTrace();
         }
     }
 
     @Test
     public void patchTripFail() {
+
         String uri = "http://localhost:8004/trip/wrongId";
+
         // uri.format(uri, id);
         JSONObject obj = new JSONObject();
 
         try {
+
 
             obj.put("distance", 33);
             obj.put("endTime", 323);
@@ -186,24 +205,29 @@ public class AppTest {
             obj.put("totalCost", 23.45);
 
             HttpResponse<String> res = sendHttpRequest(new URI(uri), "PATCH", obj);
+
             assertEquals(400, res.statusCode());
 
         } catch (Exception e) {
             fail();
+
             e.printStackTrace();
         }
     }
 
     @Test
     public void tripsForPassengerPass() {
+
         String uri1 = "http://localhost:8004/trip/confirm";
         String uri2 = "http://localhost:8004/trip/passenger/goobagoon";
+
         JSONObject obj = new JSONObject();
 
         try {
             obj.put("driver", "goob");
             obj.put("passenger", "goobagoon");
             obj.put("startTime", 123456);
+
             sendHttpRequest(new URI(uri1), "POST", obj);
 
             HttpResponse<String> res = sendHttpRequest(new URI(uri2), "GET", obj);
@@ -211,6 +235,7 @@ public class AppTest {
 
         } catch (Exception e) {
             fail();
+
             e.printStackTrace();
         }
 
@@ -218,6 +243,7 @@ public class AppTest {
 
     @Test
     public void tripsForPassengerFail() {
+
         String uri = "http://localhost:8004/trip/passenger/doesnotexists";
         JSONObject obj = new JSONObject();
 
@@ -230,11 +256,13 @@ public class AppTest {
 
         } catch (Exception e) {
             fail();
+
             e.printStackTrace();
         }
     }
 
     @Test
+
     public void tripsForDriverPass() {
         String uri1 = "http://localhost:8004/trip/confirm";
         String uri2 = "http://localhost:8004/trip/driver/goob";
@@ -360,6 +388,7 @@ public class AppTest {
             fail();
             throw new RuntimeException(e);
         }
+
     }
 
 }

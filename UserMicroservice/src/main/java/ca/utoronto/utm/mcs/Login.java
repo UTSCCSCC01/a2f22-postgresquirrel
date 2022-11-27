@@ -24,6 +24,7 @@ public class Login extends Endpoint {
         JSONObject body = new JSONObject(Utils.convert(r.getRequestBody()));
         if (body.has("email") && body.has("password")) {
             try {
+
                 int status = this.dao.postLoginUser(body.getString("email"), body.getString("password"));
                 if (!this.dao.checkUserExists(body.getString("email"))) {
                     System.out.println("User does not exist");

@@ -43,6 +43,7 @@ public class Trip extends Endpoint {
                     this.sendStatus(r, 404);
                 } else if (p == -1) {
                     this.sendStatus(r, 400);
+
                 }
 
             } else {

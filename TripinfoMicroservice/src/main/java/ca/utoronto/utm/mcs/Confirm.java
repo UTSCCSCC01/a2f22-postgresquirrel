@@ -29,7 +29,9 @@ public class Confirm extends Endpoint {
 
                     JSONObject res = new JSONObject();
                     JSONObject obj = new JSONObject();
+
                     obj.put("_id", id);
+
                     res.put("data", obj);
                     this.sendResponse(r, res, 200);
                 } else {

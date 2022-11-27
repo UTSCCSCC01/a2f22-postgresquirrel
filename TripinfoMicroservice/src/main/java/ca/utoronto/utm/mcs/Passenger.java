@@ -29,6 +29,7 @@ public class Passenger extends Endpoint {
 
             JSONObject passenger = this.dao.getPassengerTrips(params[3]);
 
+
             if (passenger.has("empty")) {
                 System.out.println("Passenger does not exist");
                 this.sendStatus(r, 404);
@@ -40,6 +41,7 @@ public class Passenger extends Endpoint {
                 this.sendResponse(r, res, 200);
                 return;
             }
+
 
         } catch (Exception e) {
             e.printStackTrace();

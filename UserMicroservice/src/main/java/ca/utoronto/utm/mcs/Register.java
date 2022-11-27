@@ -24,6 +24,7 @@ public class Register extends Endpoint {
         if (body.has("name") && body.has("email") && body.has("password")) {
             try {
 
+
                 if (this.dao.checkUserExists(body.getString("email"))) {
                     this.sendStatus(r, 400);
                     return;
@@ -34,6 +35,7 @@ public class Register extends Endpoint {
                     System.out.println("registered");
                     this.sendStatus(r, 200);
                 }
+
 
             } catch (Exception e) {
                 e.printStackTrace();

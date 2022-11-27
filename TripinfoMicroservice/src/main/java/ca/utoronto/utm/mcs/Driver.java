@@ -29,6 +29,7 @@ public class Driver extends Endpoint {
 
             JSONObject driver = this.dao.getDriverTrips(params[3]);
 
+
             if (driver.has("empty")) {
                 System.out.println("Passenger does not exist");
                 this.sendStatus(r, 404);
@@ -40,6 +41,7 @@ public class Driver extends Endpoint {
                 this.sendResponse(r, res, 200);
                 return;
             }
+
 
         } catch (Exception e) {
             e.printStackTrace();

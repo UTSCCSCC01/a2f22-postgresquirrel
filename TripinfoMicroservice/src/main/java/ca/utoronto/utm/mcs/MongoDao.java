@@ -68,6 +68,7 @@ public class MongoDao {
 			String driver_uid = json.getString("driver");
 			String passenger_uid = json.getString("passenger");
 
+
 			HttpResponse<String> res = sendHttpRequest(new URI("http://locationmicroservice:8000/location/navigation/"
 					+ driver_uid + "?passengerUid=" + passenger_uid), "GET", new JSONObject());
 
@@ -127,6 +128,7 @@ public class MongoDao {
 		MongoCursor<Document> cursor = collection.find(filt).iterator();
 
 		ArrayList<Document> list = new ArrayList<Document>();
+
 		JSONObject obj = new JSONObject();
 
 		if (!cursor.hasNext()) {
@@ -139,6 +141,7 @@ public class MongoDao {
 		}
 		System.out.println(list);
 		cursor.close();
+
 		obj.put("trips", list);
 
 		return obj;
@@ -151,6 +154,7 @@ public class MongoDao {
 		MongoCursor<Document> cursor = collection.find(filt).iterator();
 
 		ArrayList<Document> list = new ArrayList<Document>();
+
 		JSONObject obj = new JSONObject();
 
 		if (!cursor.hasNext()) {
@@ -162,6 +166,12 @@ public class MongoDao {
 			list.add(cursor.next());
 		}
 		cursor.close();
+
+		while (cursor.hasNext()) {
+			list.add(cursor.next());
+		}
+		JSONObject obj = new JSONObject();
+
 		obj.put("trips", list);
 
 		return obj;
@@ -193,6 +203,7 @@ public class MongoDao {
 	public long patchTrip(String id, int distance, long endTime, long timeElapsed, double totalCost) {
 		System.out.println("updating");
 
+
 		try {
 			Bson filt = Filters.eq("_id", new ObjectId(id));
 
@@ -210,6 +221,7 @@ public class MongoDao {
 			e.printStackTrace();
 			System.out.println(" issue with object id");
 			return -1;
+
 		}
 
 	}

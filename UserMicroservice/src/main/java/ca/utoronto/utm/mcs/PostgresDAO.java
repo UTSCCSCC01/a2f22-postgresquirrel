@@ -74,6 +74,7 @@ public class PostgresDAO {
         query = String.format(query, name, email, password);
         this.st.execute(query);
         return 1;
+
     }
 
     public ResultSet getUsersFromUid(int uid) throws SQLException {
