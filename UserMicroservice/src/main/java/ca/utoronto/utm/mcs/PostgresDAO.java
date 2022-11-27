@@ -27,21 +27,53 @@ public class PostgresDAO {
     }
 
     // *** implement database operations here *** //
-    public ResultSet postLoginUser(String email, String password) throws SQLException {
-        // must hash string here
-        password = Utils.hashString(password);
-        String query = "SELECT * FROM users WHERE email = '%1$s' AND \"password\" = '%2$s'";
-        query = String.format(query, email, password);
-        return this.st.executeQuery(query);
+    public boolean checkUserExists(String email) throws SQLException {
+        String checkUser = "SELECT * FROM users WHERE email = '%s'";
+        checkUser = String.format(checkUser, email);
+        ResultSet rs = this.st.executeQuery(checkUser);
+        boolean row = rs.next();
+        boolean empty = false;
+        if (row) {
+            String emailResult = rs.getString("email");
+            System.out.println("Result login: " + emailResult + row);
+            rs.close();
+            empty = true;
+
+        }
+        return empty;
+
     }
 
-    public boolean postRegisterUser(String name, String email, String password) throws SQLException {
+    public int postLoginUser(String email, String password) throws SQLException {
+        // must hash string here
+        password = Utils.hashString(password);
+
+        String query = "SELECT * FROM users WHERE email = '%1$s' AND \"password\" = '%2$s'";
+        query = String.format(query, email, password);
+        ResultSet q = this.st.executeQuery(query);
+        boolean qExists = q.next();
+        String qEmail = null;
+        if (qExists) {
+            qEmail = q.getString("email");
+            System.out.println("Logging in email: " + qEmail);
+        }
+
+        if (qEmail != null) {
+            return 1;
+        } else {
+            return 2;
+        }
+    }
+
+    public int postRegisterUser(String name, String email, String password) throws SQLException {
 
         // must hash string
         password = Utils.hashString(password);
+
         String query = "INSERT INTO users (prefer_name, email, \"password\", rides) VALUES ('%1$s', '%2$s', '%3$s' , 0)";
         query = String.format(query, name, email, password);
-        return this.st.execute(query);
+        this.st.execute(query);
+        return 1;
     }
 
     public ResultSet getUsersFromUid(int uid) throws SQLException {

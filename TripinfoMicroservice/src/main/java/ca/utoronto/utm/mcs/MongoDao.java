@@ -131,13 +131,14 @@ public class MongoDao {
 
 		if (!cursor.hasNext()) {
 			obj.put("empty", "");
+			cursor.close();
 			return obj;
 		}
 		while (cursor.hasNext()) {
 			list.add(cursor.next());
 		}
 		System.out.println(list);
-
+		cursor.close();
 		obj.put("trips", list);
 
 		return obj;
@@ -154,12 +155,13 @@ public class MongoDao {
 
 		if (!cursor.hasNext()) {
 			obj.put("empty", "");
+			cursor.close();
 			return obj;
 		}
 		while (cursor.hasNext()) {
 			list.add(cursor.next());
 		}
-
+		cursor.close();
 		obj.put("trips", list);
 
 		return obj;
@@ -191,23 +193,23 @@ public class MongoDao {
 	public long patchTrip(String id, int distance, long endTime, long timeElapsed, double totalCost) {
 		System.out.println("updating");
 
-		Bson filt = Filters.eq("_id", new ObjectId(id));
-
-		Bson updates = Updates.combine(
-				Updates.set("distance", distance),
-				Updates.set("endTime", endTime),
-				Updates.set("timeElapsed", timeElapsed),
-				Updates.set("totalCost", totalCost));
-
-		UpdateOptions options = new UpdateOptions().upsert(true);
 		try {
-			UpdateResult doc = collection.updateOne(filt, updates, options);
+			Bson filt = Filters.eq("_id", new ObjectId(id));
+
+			Bson updates = Updates.combine(
+					Updates.set("distance", distance),
+					Updates.set("endTime", endTime),
+					Updates.set("timeElapsed", timeElapsed),
+					Updates.set("totalCost", totalCost));
+
+			UpdateOptions options = new UpdateOptions().upsert(true);
+			UpdateResult res = collection.updateOne(filt, updates, options);
 			System.out.println("updated");
-			return doc.getModifiedCount();
+			return res.getModifiedCount();
 		} catch (Exception e) {
 			e.printStackTrace();
-			System.out.println(" issue with updating");
-			return 0;
+			System.out.println(" issue with object id");
+			return -1;
 		}
 
 	}

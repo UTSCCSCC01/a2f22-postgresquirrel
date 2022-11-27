@@ -185,7 +185,7 @@ public class AppTest {
             obj.put("totalCost", 23.45);
 
             HttpResponse<String> res = sendHttpRequest(new URI(uri), "PATCH", obj);
-            assertEquals(404, res.statusCode());
+            assertEquals(400, res.statusCode());
 
         } catch (Exception e) {
             // TODO Auto-generated catch block
