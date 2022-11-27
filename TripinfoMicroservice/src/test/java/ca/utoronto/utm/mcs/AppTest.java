@@ -1,8 +1,5 @@
 package ca.utoronto.utm.mcs;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -15,6 +12,8 @@ import com.mongodb.util.JSON;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Please write your tests in this class.
@@ -71,6 +70,7 @@ public class AppTest {
                     body);
             assertEquals(200, response.statusCode());
         } catch (Exception e) {
+            fail();
             throw new RuntimeException(e);
         }
     }
@@ -99,6 +99,7 @@ public class AppTest {
                     body);
             assertEquals(404, response.statusCode());
         } catch (Exception e) {
+            fail();
             throw new RuntimeException(e);
         }
     }
@@ -116,7 +117,7 @@ public class AppTest {
             assertEquals(200, res.statusCode());
 
         } catch (Exception e) {
-            // TODO Auto-generated catch block
+            fail();
             e.printStackTrace();
         }
 
@@ -135,7 +136,7 @@ public class AppTest {
             assertEquals(400, res.statusCode());
 
         } catch (Exception e) {
-            // TODO Auto-generated catch block
+            fail();
             e.printStackTrace();
         }
     }
@@ -155,7 +156,7 @@ public class AppTest {
             obj1.put("startTime", 123456);
             HttpResponse<String> resCreate = sendHttpRequest(new URI(uri2), "POST", obj1);
             JSONObject idObj = new JSONObject(resCreate.body());
-            String id = idObj.getJSONObject("data").getString("id");
+            String id = idObj.getJSONObject("data").getString("_id");
             uri = uri + id;
             obj2.put("distance", 33);
             obj2.put("endTime", 323);
@@ -166,7 +167,7 @@ public class AppTest {
             assertEquals(200, res.statusCode());
 
         } catch (Exception e) {
-            // TODO Auto-generated catch block
+            fail();
             e.printStackTrace();
         }
     }
@@ -188,7 +189,7 @@ public class AppTest {
             assertEquals(400, res.statusCode());
 
         } catch (Exception e) {
-            // TODO Auto-generated catch block
+            fail();
             e.printStackTrace();
         }
     }
@@ -196,7 +197,7 @@ public class AppTest {
     @Test
     public void tripsForPassengerPass() {
         String uri1 = "http://localhost:8004/trip/confirm";
-        String uri2 = "http://localhost:8004/trip/passenger/%s";
+        String uri2 = "http://localhost:8004/trip/passenger/goobagoon";
         JSONObject obj = new JSONObject();
 
         try {
@@ -209,7 +210,7 @@ public class AppTest {
             assertEquals(200, res.statusCode());
 
         } catch (Exception e) {
-            // TODO Auto-generated catch block
+            fail();
             e.printStackTrace();
         }
 
@@ -228,7 +229,7 @@ public class AppTest {
             assertEquals(404, res.statusCode());
 
         } catch (Exception e) {
-            // TODO Auto-generated catch block
+            fail();
             e.printStackTrace();
         }
     }
@@ -249,7 +250,7 @@ public class AppTest {
             assertEquals(200, res.statusCode());
 
         } catch (Exception e) {
-            // TODO Auto-generated catch block
+            fail();
             e.printStackTrace();
         }
     }
@@ -270,7 +271,7 @@ public class AppTest {
             assertEquals(400, res.statusCode());
 
         } catch (Exception e) {
-            // TODO Auto-generated catch block
+            fail();
             e.printStackTrace();
         }
     }
@@ -339,11 +340,12 @@ public class AppTest {
 
             JSONObject json = new JSONObject(confirm_res.body());
             JSONObject data = json.getJSONObject("data");
-            String id = data.getString("id");
+            String id = data.getString("_id");
             HttpResponse<String> response = sendHttpRequest(new URI("http://localhost:8004/trip/driverTime/" + id),
                     "GET", new JSONObject());
             assertEquals(200, response.statusCode());
         } catch (Exception e) {
+            fail();
             throw new RuntimeException(e);
         }
     }
@@ -355,6 +357,7 @@ public class AppTest {
                     new JSONObject());
             assertEquals(400, response.statusCode());
         } catch (Exception e) {
+            fail();
             throw new RuntimeException(e);
         }
     }
