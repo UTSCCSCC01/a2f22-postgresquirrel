@@ -39,8 +39,10 @@ public class Trip extends Endpoint {
                 if (p > 0) {
                     System.out.println("patched trip");
                     this.sendStatus(r, 200);
-                } else {
+                } else if (p == 0) {
                     this.sendStatus(r, 404);
+                } else if (p == -1) {
+                    this.sendStatus(r, 400);
                 }
 
             } else {

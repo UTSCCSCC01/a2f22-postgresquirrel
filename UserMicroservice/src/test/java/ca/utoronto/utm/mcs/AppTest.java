@@ -14,9 +14,9 @@ import java.net.http.HttpResponse;
 import java.time.Duration;
 
 /**
- * Please write your tests in this class. 
+ * Please write your tests in this class.
  */
- 
+
 public class AppTest {
 
     HttpClient client = HttpClient.newBuilder()
@@ -25,14 +25,15 @@ public class AppTest {
             .connectTimeout(Duration.ofSeconds(20))
             .build();
 
-    private HttpResponse<String> sendHttpRequest(URI uri, String method, JSONObject body) throws IOException, InterruptedException {
+    private HttpResponse<String> sendHttpRequest(URI uri, String method, JSONObject body)
+            throws IOException, InterruptedException {
         HttpClient client = HttpClient.newBuilder()
                 .version(HttpClient.Version.HTTP_1_1)
                 .followRedirects(HttpClient.Redirect.NORMAL)
                 .connectTimeout(Duration.ofSeconds(20))
                 .build();
 
-        //GET /location/nearbyDriver/:uid?radius=
+        // GET /location/nearbyDriver/:uid?radius=
         HttpRequest testRequest = HttpRequest.newBuilder(uri)
                 .method(method, HttpRequest.BodyPublishers.ofString(body.toString())).build();
 
@@ -47,7 +48,8 @@ public class AppTest {
             user1.put("email", "user1@example.com");
             user1.put("password", "password");
 
-            HttpResponse<String> response = sendHttpRequest(new URI("http://localhost:8004/user/register"), "POST", user1);
+            HttpResponse<String> response = sendHttpRequest(new URI("http://localhost:8004/user/register"), "POST",
+                    user1);
             assertEquals(200, response.statusCode());
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -61,7 +63,8 @@ public class AppTest {
             user2.put("email", "user2@example.com");
             user2.put("password", "password");
 
-            HttpResponse<String> response = sendHttpRequest(new URI("http://localhost:8004/user/register"), "POST", user2);
+            HttpResponse<String> response = sendHttpRequest(new URI("http://localhost:8004/user/register"), "POST",
+                    user2);
             assertEquals(400, response.statusCode());
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -73,7 +76,7 @@ public class AppTest {
         JSONObject user3 = new JSONObject();
         try {
             user3.put("name", "user3");
-            user3.put("email", "user3@example.com");
+            user3.put("email", "user333@example.com");
             user3.put("password", "password");
 
             sendHttpRequest(new URI("http://localhost:8004/user/register"), "POST", user3);
