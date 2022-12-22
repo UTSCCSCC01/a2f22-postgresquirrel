@@ -170,7 +170,7 @@ public class MongoDao {
 		while (cursor.hasNext()) {
 			list.add(cursor.next());
 		}
-		JSONObject obj = new JSONObject();
+		// JSONObject obj = new JSONObject();
 
 		obj.put("trips", list);
 
